@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.6
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmbilightGUI", "AmbilightGUI\AmbilightGUI.csproj", "{D7B5FBFE-7F4B-447C-BF67-0017575E3DD7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ambilight", "Ambilight\Ambilight.csproj", "{1F90782E-3C4C-4AD2-B9B0-55FD26883963}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AmbilightConsole", "AmbilightConsole\AmbilightConsole.csproj", "{0253B8C0-EB8E-4450-B135-6FE515A74413}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D7B5FBFE-7F4B-447C-BF67-0017575E3DD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7B5FBFE-7F4B-447C-BF67-0017575E3DD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7B5FBFE-7F4B-447C-BF67-0017575E3DD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7B5FBFE-7F4B-447C-BF67-0017575E3DD7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F90782E-3C4C-4AD2-B9B0-55FD26883963}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F90782E-3C4C-4AD2-B9B0-55FD26883963}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F90782E-3C4C-4AD2-B9B0-55FD26883963}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F90782E-3C4C-4AD2-B9B0-55FD26883963}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0253B8C0-EB8E-4450-B135-6FE515A74413}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0253B8C0-EB8E-4450-B135-6FE515A74413}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0253B8C0-EB8E-4450-B135-6FE515A74413}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0253B8C0-EB8E-4450-B135-6FE515A74413}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
