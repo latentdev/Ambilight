@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,7 @@ namespace AmbilightLib
         int screenHeight;
         CancellationTokenSource cts = null;
         byte[] buffer;
+        //BackgroundWorker backgroundWorker;
 
         public Ambilight()
         {
@@ -42,7 +44,8 @@ namespace AmbilightLib
             depth = 20;
             screenWidth = (int)SystemParameters.PrimaryScreenWidth;
             screenHeight = (int)SystemParameters.PrimaryScreenHeight;
-            buffer = new byte[((vertical * 2) * 3) + ((horizontal * 2) * 3)+1];
+            //changed horizontal to 1 for just the top
+            buffer = new byte[((vertical * 2) * 3) + ((horizontal * 1) * 3)];
         }
 
         public void SetDevice(string deviceName)
@@ -64,13 +67,31 @@ namespace AmbilightLib
             bool success = device.Open();
             if (success)
             {
-                if (cts == null || cts.IsCancellationRequested)
-                    cts = new CancellationTokenSource();
+                //if (cts == null || cts.IsCancellationRequested)
+                //    cts = new CancellationTokenSource();
 
-                ThreadPool.QueueUserWorkItem(new WaitCallback(Loop), cts.Token);
+                //ThreadPool.QueueUserWorkItem(new WaitCallback(Loop), cts.Token);
+                //backgroundWorker = new BackgroundWorker
+                //{
+                //    WorkerSupportsCancellation = true
+                //};
+                //backgroundWorker.DoWork += BackgroundWorkerOnDoWork;
+                Thread t = new Thread(Loop) { IsBackground = true };
+                t.Start();
                 state = true;
             }
             return success;
+        }
+
+        private void BackgroundWorkerOnDoWork(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker worker = (BackgroundWorker)sender;
+            while (!worker.CancellationPending)
+            {
+                Loop();
+                //Do your stuff here
+                //worker.ReportProgress(0, "AN OBJECT TO PASS TO THE UI-THREAD");
+            }
         }
 
         public bool Stop()
@@ -83,7 +104,7 @@ namespace AmbilightLib
             return success;
         }
 
-        public void Loop(object obj)
+        public void Loop()
         {
             while (state)
             {
@@ -106,14 +127,16 @@ namespace AmbilightLib
         }
         public void WriteFrame()
         {
-            int index = 1;
-            //Values for my string of lights are Green, Red, Blue
-            for (int side = 0; side < 4; side++)
+            int index = 0;
+            //Values for my string of lights are Green, Red, Blue //changed to 3 from 4
+            for (int side = 0; side < 3; side++)
             {
                 for (int i = 0; i < sides[side].Count(); i++)
                 {
-                    buffer[index] = sides[side][i].G;
-                    buffer[index + 1] = sides[side][i].R;
+
+                    buffer[index] = sides[side][i].R;
+                    buffer[index + 1] = sides[side][i].G;
+
                     buffer[index + 2] = sides[side][i].B;
                     index += 3;
                 }

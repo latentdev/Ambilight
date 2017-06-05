@@ -26,7 +26,9 @@ namespace AmbilightConsole
             i=Convert.ToInt32(Console.ReadLine());
             lights.Start(list[i].ProductName);
             Thread.Sleep(10);
-            Console.WriteLine(lights.device.Read());
+            //Console.WriteLine(lights.device.Read());
+            Console.Write("Press any key to quit: ");
+            Console.ReadKey();
         }
     }
 }
