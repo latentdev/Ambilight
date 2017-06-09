@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HidSharp;
 using System.Diagnostics;
+using System.IO;
 
 namespace AmbilightLib
 {
@@ -129,9 +130,16 @@ namespace AmbilightLib
                     //Console.WriteLine(packet);
                     for(int i=0;i<numberOfPackets;i++)
                         stream.Write(packets[i], 0, packets[i].Length);
-                } catch (TimeoutException e)
+                } catch (Exception e)
                 {
-                    Console.WriteLine(e);
+                    if (e is TimeoutException ||
+                       e is InvalidOperationException ||
+                       e is IOException)
+                    {
+                        Console.WriteLine(e);
+                        return false;
+                    }
+                    throw;
                 }
                 return true;
             }
@@ -140,3 +148,4 @@ namespace AmbilightLib
         }
     }
 }
+ 

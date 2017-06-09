@@ -13,25 +13,27 @@ namespace AmbilightLib
     public class Ambilight: IAmbilight
     {
         public IDevice device;
-        bool state = false;
+        public bool state { get; set; }
         Color[][] sides = new Color[4][];
-        int depth;
-        int vertical;
-        int horizontal;
-        int verticalOffset;
-        int horizontalOffset;
+        public int depth { get; set; }
+        public int vertical { get; set; }
+        public int horizontal { get; set; }
+        public int verticalOffset { get; set; }
+        public int horizontalOffset { get; set; }
+        public int fps { get; set; }
         int screenWidth;
         int screenHeight;
-        CancellationTokenSource cts = null;
         byte[] buffer;
-        //BackgroundWorker backgroundWorker;
+
+        public event EventHandler<EventArgs> DataReceived;
 
         public Ambilight()
         {
             device = USBDevice.Instance;
-            vertical = 52;
-            horizontal = 90;
-            verticalOffset = 0;
+            state = false;
+            vertical = 3;
+            horizontal = 4;
+            verticalOffset = 100;
             horizontalOffset = 0;
             //left
             sides[0] = new Color[vertical];
@@ -41,7 +43,7 @@ namespace AmbilightLib
             sides[2] = new Color[vertical];
             //bottom
             sides[3] = new Color[horizontal];
-            depth = 20;
+            depth = 10;
             screenWidth = (int)SystemParameters.PrimaryScreenWidth;
             screenHeight = (int)SystemParameters.PrimaryScreenHeight;
             //changed horizontal to 1 for just the top
@@ -65,17 +67,9 @@ namespace AmbilightLib
         {
             SetDevice(deviceName);
             bool success = device.Open();
+            SetDimensions(vertical, horizontal);
             if (success)
             {
-                //if (cts == null || cts.IsCancellationRequested)
-                //    cts = new CancellationTokenSource();
-
-                //ThreadPool.QueueUserWorkItem(new WaitCallback(Loop), cts.Token);
-                //backgroundWorker = new BackgroundWorker
-                //{
-                //    WorkerSupportsCancellation = true
-                //};
-                //backgroundWorker.DoWork += BackgroundWorkerOnDoWork;
                 Thread t = new Thread(Loop) { IsBackground = true };
                 t.Start();
                 state = true;
@@ -83,20 +77,11 @@ namespace AmbilightLib
             return success;
         }
 
-        private void BackgroundWorkerOnDoWork(object sender, DoWorkEventArgs e)
-        {
-            BackgroundWorker worker = (BackgroundWorker)sender;
-            while (!worker.CancellationPending)
-            {
-                Loop();
-                //Do your stuff here
-                //worker.ReportProgress(0, "AN OBJECT TO PASS TO THE UI-THREAD");
-            }
-        }
-
         public bool Stop()
         {
             bool success = device.Close();
+            fps = 0;
+            DataReceived?.Invoke(this, new EventArgs());
             if (success)
             {
                 state = false;
@@ -104,15 +89,22 @@ namespace AmbilightLib
             return success;
         }
 
-        public void Loop()
+        private void Loop()
         {
+            DateTime current;
             while (state)
             {
+                current = DateTime.Now;
                 GetFrame();
                 WriteFrame();
+                int span = (DateTime.Now-current).Milliseconds;
+                fps = 1000 / span;
+                DataReceived?.Invoke(this, new EventArgs());
             }
+            fps = 0;
+            DataReceived?.Invoke(this, new EventArgs());
         }
-        public void GetFrame()
+        private void GetFrame()
         {
             Rectangle rect = new Rectangle(0+horizontalOffset, 0, depth, screenHeight);
             sides[0] = VerticalColors(sides[0], ScreenGraphics.CaptureFromScreen(rect));
@@ -121,11 +113,14 @@ namespace AmbilightLib
             sides[1] = HorizontalColors(sides[1], ScreenGraphics.CaptureFromScreen(rect));
             rect = new Rectangle(screenWidth - depth-horizontalOffset, 0, depth, screenHeight);
             sides[2] = VerticalColors(sides[2], ScreenGraphics.CaptureFromScreen(rect));
-            rect = new Rectangle(0, screenHeight - depth-verticalOffset, screenWidth, depth);
-            sides[3] = HorizontalColors(sides[3], ScreenGraphics.CaptureFromScreen(rect));
-            sides[3] = sides[3].Reverse().ToArray();
+
+            //this is the bottom of the screen. un-comment to get data on the bottom of the screen.
+
+            //rect = new Rectangle(0, screenHeight - depth-verticalOffset, screenWidth, depth);
+            //sides[3] = HorizontalColors(sides[3], ScreenGraphics.CaptureFromScreen(rect));
+            //sides[3] = sides[3].Reverse().ToArray();
         }
-        public void WriteFrame()
+        private void WriteFrame()
         {
             int index = 0;
             //Values for my string of lights are Green, Red, Blue //changed to 3 from 4
@@ -143,7 +138,7 @@ namespace AmbilightLib
             }
             device.Write(buffer);
         }
-        public Color[] HorizontalColors(Color[] pixels, Bitmap bitmap)
+        private Color[] HorizontalColors(Color[] pixels, Bitmap bitmap)
         {
             int count = pixels.Count();
             int multiplier = bitmap.Width / count;
@@ -154,7 +149,7 @@ namespace AmbilightLib
             }
             return pixels;
         }
-        public Color[] VerticalColors(Color [] pixels, Bitmap bitmap)
+        private Color[] VerticalColors(Color [] pixels, Bitmap bitmap)
         {
             int count = pixels.Count();
             int multiplier = bitmap.Height / count;
@@ -166,5 +161,9 @@ namespace AmbilightLib
             return pixels;
         }
 
+        public IDevice GetDevice()
+        {
+            return device;
+        }
     }
 }

@@ -99,5 +99,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Ambilight\Ambilight.csproj">
+      <Project>{1f90782e-3c4c-4ad2-b9b0-55fd26883963}</Project>
+      <Name>Ambilight</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

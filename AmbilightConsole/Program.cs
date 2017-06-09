@@ -13,8 +13,8 @@ namespace AmbilightConsole
     {
         static void Main(string[] args)
         {
-            Ambilight lights = new Ambilight();
-            HidDevice [] list = (HidDevice[])lights.device.GetDeviceList();
+            IAmbilight lights = new Ambilight();
+            HidDevice [] list = (HidDevice[])lights.GetDevice().GetDeviceList();
             int i = 0;
             foreach (var device in list)
             {

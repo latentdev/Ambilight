@@ -20,10 +20,10 @@
     </Window.DataContext>
     <Border Background="#353535" Padding="4" CornerRadius="40,10,40,10">
         <DockPanel>
-            <DockPanel x:Name="Title"  Margin="2" DockPanel.Dock="Top" >
-                <Button x:Name="CloseButton" Background="#9d9d9d" Width="20" DockPanel.Dock="Right"  >X</Button>
-                <Button x:Name="MinimizeButton" Background="#9d9d9d" Width="20" DockPanel.Dock="Right"  >_</Button>
-                <Label TextBlock.Foreground="#9d9d9d" VerticalAlignment="Center" DockPanel.Dock="Top" Padding="190,0,5,0">Arduino Ambilight</Label>
+            <DockPanel x:Name="Title"  Margin="2" DockPanel.Dock="Top" MouseDown="Title_MouseDown">
+                <Button x:Name="CloseButton" Background="#9d9d9d" Width="20" DockPanel.Dock="Right" Click="CloseButton_Click"  >X</Button>
+                <Button x:Name="MinimizeButton" Background="#9d9d9d" Width="20" DockPanel.Dock="Right" Click="MinimizeButton_Click"  >_</Button>
+                <Label TextBlock.Foreground="#9d9d9d" VerticalAlignment="Center" DockPanel.Dock="Top" Padding="155,0,5,0">Arduino Ambilight</Label>
             </DockPanel>
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -75,48 +75,56 @@
                 </Rectangle>
 
                 <Label TextBlock.Foreground="#9d9d9d" Grid.Column="0" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,2,0" >Device</Label>
-                <StackPanel x:Name="radioButtons" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="4" Orientation="Horizontal">
-                    <ComboBox x:Name="cboDevices" MinWidth="75"
-                          IsEnabled="True" ItemsSource="{Binding Devices}" 
-                          SelectedItem="{Binding SelectedPort}"></ComboBox>
-                    <!--<RadioButton x:Name="radio_button1" VerticalAlignment="Center" Margin="6,2" Checked="RadioButton_Changed" >COM1</RadioButton>
-                    <RadioButton x:Name="radio_button2" VerticalAlignment="Center" Margin="6,2" Checked="RadioButton_Changed">COM2</RadioButton>
-                    <RadioButton x:Name="radio_button3" VerticalAlignment="Center" Margin="6,2" Checked="RadioButton_Changed">COM3</RadioButton>
-                    <RadioButton x:Name="radio_button4" VerticalAlignment="Center" Margin="6,2" Checked="RadioButton_Changed">COM4</RadioButton>
-                    <RadioButton x:Name="radio_button5" VerticalAlignment="Center" Margin="6,2" Checked="RadioButton_Changed">COM5</RadioButton>
-                    <RadioButton x:Name="radio_button6" VerticalAlignment="Center" Margin="6,2" Checked="RadioButton_Changed">COM6</RadioButton>-->
+                <!--<StackPanel x:Name="radioButtons" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="4" Orientation="Horizontal">-->
+                    <ComboBox x:Name="cboDevices" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Margin="4,0,0,4" MinWidth="75"
+                              IsEnabled="True" ItemsSource="{Binding Devices}" 
+                              SelectedItem="{Binding SelectedPort}">
+                    </ComboBox>
+                <StackPanel Grid.Column="4" Orientation="Horizontal">
+                    <Label>FPS:</Label>
+                    <TextBlock Margin="0,5"  Text="{Binding Path=FPS}"></TextBlock>
                 </StackPanel>
-                <Label TextBlock.Foreground="#9d9d9d" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,2,0">Points</Label>
+                
+                <!--</StackPanel>-->
+                <Label TextBlock.Foreground="#9d9d9d" Grid.Column="0" Grid.Row="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,2,0">LEDs</Label>
                 <StackPanel Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="4" Orientation="Horizontal" >
                     <Label VerticalAlignment="Center" Margin="4,0,0,0">Left:</Label>
-                    <TextBox x:Name="points_left" Width="40" Margin="0,8,0,8" Text="5"/>
+                    <TextBox x:Name="points_left" Width="40" Margin="0,8,0,8" Text="{Binding Path=Left}" IsReadOnly="{Binding ReadOnly}"/>
                     <Label VerticalAlignment="Center">Top:</Label>
-                    <TextBox x:Name="points_top" Width="40" Margin="0,8,0,8" Text="5"/>
+                    <TextBox x:Name="points_top" Width="40" Margin="0,8,0,8" Text="{Binding Path=Top}" IsReadOnly="{Binding ReadOnly}"/>
                     <Label VerticalAlignment="Center">Right:</Label>
-                    <TextBox x:Name="points_right" Width="40" Margin="0,8,0,8" Text="5"/>
+                    <TextBox x:Name="points_right" Width="40" Margin="0,8,0,8" Text="{Binding Path=Right}" IsReadOnly="{Binding ReadOnly}"/>
                     <Label VerticalAlignment="Center">Bottom:</Label>
-                    <TextBox x:Name="points_bottom" Width="40" Margin="0,8,0,8" Text="5"/>
+                    <TextBox x:Name="points_bottom" Width="40" Margin="0,8,0,8" Text="{Binding Path=Bottom}" IsReadOnly="{Binding ReadOnly}"/>
                 </StackPanel>
 
-                <Label TextBlock.Foreground="#9d9d9d" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,2,0">Top Pixels</Label>
-                <TextBlock Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="4" Name="text_top" VerticalAlignment="Center" Margin="2,0,0,0" Padding="6,0,0,0"></TextBlock>
+                <Label TextBlock.Foreground="#9d9d9d" Grid.Column="0" Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,2,0">Offset (px)</Label>
+                <StackPanel Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="4" Orientation="Horizontal">
+                    <Label VerticalAlignment="Center" Margin="4,0,0,0">Left/Right:</Label>
+                    <TextBox x:Name="offset_leftright" Width="40" Margin="0,8,0,8" Text="{Binding Path=HorizontalOffset}" IsReadOnly="{Binding ReadOnly}"/>
+                    <Label VerticalAlignment="Center">Top/Bottom:</Label>
+                    <TextBox x:Name="offset_topbottom" Width="40" Margin="0,8,0,8" Text="{Binding Path=VerticalOffset}" IsReadOnly="{Binding ReadOnly}"/>
+                </StackPanel>
 
-                <Label TextBlock.Foreground="#9d9d9d" Grid.Column="0" Grid.Row="3" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,2,0">Bottom Pixels</Label>
-                <TextBlock Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="4" Name="text_bottom" VerticalAlignment="Center" Margin="2,0,0,0" Padding="6,0,0,0"></TextBlock>
+                <Label TextBlock.Foreground="#9d9d9d" Grid.Column="0" Grid.Row="3" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,2,0">Depth (px)</Label>
+                <StackPanel Grid.Column="1" Grid.Row="3" Grid.ColumnSpan="4" Orientation="Horizontal">
+                    <Label VerticalAlignment="Center" Margin="4,0,8,0">All Sides:</Label>
+                    <TextBox x:Name="depth" Width="40" Margin="0,8,0,8" Text="{Binding Path=Depth}" IsReadOnly="{Binding ReadOnly}"/>
+                </StackPanel>
 
                 <Label TextBlock.Foreground="#9d9d9d" Grid.Column="0" Grid.Row="4" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,2,0">State</Label>
-                <TextBlock Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="4" Name="text_state" VerticalAlignment="Center" Margin="2,0,0,0" Padding="6,0,0,0"></TextBlock>
+                <TextBlock Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="4" Name="text_state" VerticalAlignment="Center" Margin="2,0,0,0" Padding="6,0,0,0" Text="{Binding Path=State}"></TextBlock>
 
                 <TextBlock Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="4" Grid.RowSpan="2" Name="text_error" VerticalAlignment="Top" Margin="4,6,0,4" Padding="6,0,0,0"></TextBlock>
 
-                <Button Background="#9d9d9d" Grid.Column="0" Grid.Row="5" Margin="4" MinWidth="80" MinHeight="30"  Name="Start">
+                <Button Background="#9d9d9d" Grid.Column="0" Grid.Row="5" Margin="4" MinWidth="80" MinHeight="30"  Name="Start" Command="{Binding StartCommand}">
                     <Button.Effect>
                         <DropShadowEffect ShadowDepth="3"/>
                     </Button.Effect>
                     Start
                 </Button>
 
-                <Button Background="#9d9d9d" Grid.Column="0" Grid.Row="6" Margin="4" MinWidth="80" MinHeight="30"  Name="Stop">
+                <Button Background="#9d9d9d" Grid.Column="0" Grid.Row="6" Margin="4" MinWidth="80" MinHeight="30"  Name="Stop" Command="{Binding StopCommand}">
                     <Button.Effect>
                         <DropShadowEffect ShadowDepth="3"/>
                     </Button.Effect>
