@@ -13,7 +13,7 @@ void setup() {
   // put your setup code here, to run once:
   LEDS.addLeds<WS2812B,DATA_PIN,GRB>(leds,NUM_LEDS);
   FastLED.setCorrection(TypicalLEDStrip);
-  LEDS.setBrightness(150);
+  LEDS.setBrightness(240);
   FastLED.clear();
 }
 

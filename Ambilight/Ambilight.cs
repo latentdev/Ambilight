@@ -33,7 +33,7 @@ namespace AmbilightLib
             state = false;
             vertical = 3;
             horizontal = 4;
-            verticalOffset = 100;
+            verticalOffset = 0;
             horizontalOffset = 0;
             //left
             sides[0] = new Color[vertical];
@@ -79,14 +79,16 @@ namespace AmbilightLib
 
         public bool Stop()
         {
-            bool success = device.Close();
-            fps = 0;
-            DataReceived?.Invoke(this, new EventArgs());
-            if (success)
-            {
-                state = false;
-            }
-            return success;
+            state = false;
+            return true;
+            //bool success = device.Close();
+            //fps = 0;
+            //DataReceived?.Invoke(this, new EventArgs());
+            //if (success)
+            //{
+            //    state = false;
+            //}
+            //return success;
         }
 
         private void Loop()
@@ -101,8 +103,21 @@ namespace AmbilightLib
                 fps = 1000 / span;
                 DataReceived?.Invoke(this, new EventArgs());
             }
+            FillEmpty();
+            WriteFrame();
+            device.Close();
             fps = 0;
             DataReceived?.Invoke(this, new EventArgs());
+        }
+        private void FillEmpty()
+        {
+            for(int i=0;i<sides.Length;i++)
+            {
+                for(int m=0;m<sides[i].Length;m++)
+                {
+                    sides[i][m] = Color.Black;
+                }
+            }
         }
         private void GetFrame()
         {
