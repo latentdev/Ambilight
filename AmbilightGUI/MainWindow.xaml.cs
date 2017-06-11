@@ -25,17 +25,32 @@ namespace AmbilightGUI
             InitializeComponent();
         }
 
+        /// <summary>
+        /// closes application if the X button is clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
 
             Application.Current.Shutdown();
         }
 
+        /// <summary>
+        /// minimizes application if the _ button is clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MinimizeButton_Click(object sender, RoutedEventArgs e)
         {
             this.WindowState = WindowState.Minimized;
         }
 
+        /// <summary>
+        /// moves the window if the title bar is dragged
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Title_MouseDown(object sender, MouseButtonEventArgs e)
         {
             Application.Current.MainWindow.DragMove();

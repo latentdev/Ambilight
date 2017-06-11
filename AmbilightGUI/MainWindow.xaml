@@ -80,9 +80,11 @@
                               IsEnabled="True" ItemsSource="{Binding Devices}" 
                               SelectedItem="{Binding SelectedPort}">
                     </ComboBox>
-                <StackPanel Grid.Column="4" Orientation="Horizontal">
+                <StackPanel Grid.Column="3" Orientation="Horizontal">
                     <Label>FPS:</Label>
                     <TextBlock Margin="0,5"  Text="{Binding Path=FPS}"></TextBlock>
+                    <Label>DFPS:</Label>
+                    <TextBlock Margin="0,5"  Text="{Binding Path=DeviceFPS}"></TextBlock>
                 </StackPanel>
                 
                 <!--</StackPanel>-->

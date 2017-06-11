@@ -19,14 +19,22 @@ namespace AmbilightGUI
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         private IAmbilight model = new Ambilight();
+        /// <summary>
+        /// Default constructor. subscribes as listener to model.DataReceived
+        /// </summary>
         public MainWindowVM()
         {
             model.DataReceived += Model_DataReceived;
         }
-
+        /// <summary>
+        /// updates ui when model changes
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Model_DataReceived(object sender, EventArgs e)
         {
             FPS = model.fps;
+            DeviceFPS = model.deviceFps;
             if (model.state == true)
                 State = "Running";
             else State = "Stopped";
@@ -122,6 +130,18 @@ namespace AmbilightGUI
                 fps = value; NotifyPropertyChanged();
             }
         }
+        private int deviceFps;
+        public int DeviceFPS
+        {
+            get
+            {
+                return deviceFps;
+            }
+            set
+            {
+                deviceFps = value; NotifyPropertyChanged();
+            }
+        }
         private string state;
         public string State
         {
@@ -134,10 +154,15 @@ namespace AmbilightGUI
                 state = value; NotifyPropertyChanged();
             }
         }
-
+        /// <summary>
+        /// bool used to determine if parameters are editable 
+        /// </summary>
         private bool readOnly = false;
         public bool ReadOnly { get => readOnly; set { readOnly = value; NotifyPropertyChanged(); } }
 
+        /// <summary>
+        /// gets list of currently connected devices
+        /// </summary>
         public List<string> Devices { get {
                 HidDevice[] list = (HidDevice[])model.GetDevice().GetDeviceList();
                 List<string> devices = new List<string>();
@@ -154,13 +179,18 @@ namespace AmbilightGUI
             set { selectedPort = value; NotifyPropertyChanged(); }
         }
 
+        /// <summary>
+        /// command for the start button
+        /// </summary>
         public RelayCommand StartCommand { get { return new RelayCommand((x) => Start(x)); } }
         private void Start(object x)
         {
             ReadOnly = true;
             model.Start(SelectedPort);
         }
-
+        /// <summary>
+        /// command for stop button
+        /// </summary>
         public RelayCommand StopCommand { get { return new RelayCommand((x) => Stop(x)); } }
 
         private void Stop(object x)
